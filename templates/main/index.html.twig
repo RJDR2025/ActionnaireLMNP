@@ -1,0 +1,16 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Accueil - Application Symfony + React{% endblock %}
+
+{% block body %}
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+    }
+</style>
+
+<div {{ react_component('App', {
+    'title': 'Ma première application Symfony + React OHohoh'
+}) }}></div>
+{% endblock %}

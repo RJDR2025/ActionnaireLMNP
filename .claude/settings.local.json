@@ -1,0 +1,26 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(composer require:*)",
+      "Bash(php bin/console:*)",
+      "Bash(symfony server:status:*)",
+      "Bash(composer show:*)",
+      "Bash(composer remove:*)",
+      "Bash(composer why:*)",
+      "Bash(npm install:*)",
+      "Bash(npm run dev:*)",
+      "Bash(test:*)",
+      "Bash(cat:*)",
+      "WebFetch(domain:ui.shadcn.com)",
+      "Bash(npx tailwindcss:*)",
+      "Bash(npm uninstall:*)",
+      "Bash(openssl genrsa:*)",
+      "Bash(openssl rsa:*)",
+      "Bash(npm run build:*)",
+      "Bash(sqlite3:*)",
+      "Bash(composer search:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

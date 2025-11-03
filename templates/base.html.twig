@@ -1,17 +1,107 @@
 <!DOCTYPE html>
-<html>
+<html lang="fr">
     <head>
         <meta charset="UTF-8">
-        <title>{% block title %}Welcome!{% endblock %}</title>
-        <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+        <title>{% block title %}CheckHagnere - Gestion LMNP & SCI{% endblock %}</title>
+
+        {# PWA Manifest #}
+        <link rel="manifest" href="/manifest.json">
+
+        {# Favicon #}
+        <link rel="icon" href="/medias/images/logo-a599f4ae.svg" type="image/svg+xml">
+
+        {# Apple Touch Icons #}
+        <link rel="apple-touch-icon" sizes="180x180" href="/medias/icons/icon-192x192.png">
+        <link rel="apple-touch-icon" sizes="152x152" href="/medias/icons/icon-152x152.png">
+        <link rel="apple-touch-icon" sizes="144x144" href="/medias/icons/icon-144x144.png">
+
+        {# Mobile Meta Tags #}
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+        <meta name="apple-mobile-web-app-title" content="CheckHagnere">
+        <meta name="application-name" content="CheckHagnere">
+        <meta name="theme-color" content="#000000">
+        <meta name="description" content="Application de gestion pour LMNP.AI et SCI.AI">
+
         {% block stylesheets %}
+            {{ encore_entry_link_tags('app') }}
         {% endblock %}
 
         {% block javascripts %}
-            {% block importmap %}{{ importmap('app') }}{% endblock %}
+            {{ encore_entry_script_tags('app') }}
         {% endblock %}
     </head>
     <body>
         {% block body %}{% endblock %}
+
+        {# PWA Service Worker Registration #}
+        <script>
+            if ('serviceWorker' in navigator) {
+                window.addEventListener('load', () => {
+                    navigator.serviceWorker.register('/service-worker.js')
+                        .then((registration) => {
+                            console.log('✅ Service Worker enregistré:', registration.scope);
+
+                            // Check for updates every 60 seconds
+                            setInterval(() => {
+                                registration.update();
+                            }, 60000);
+                        })
+                        .catch((error) => {
+                            console.log('❌ Échec de l\'enregistrement du Service Worker:', error);
+                        });
+                });
+
+                // Listen for updates
+                let refreshing = false;
+                navigator.serviceWorker.addEventListener('controllerchange', () => {
+                    if (!refreshing) {
+                        refreshing = true;
+                        window.location.reload();
+                    }
+                });
+            }
+
+            // Detect if app is installed (running as PWA)
+            window.addEventListener('DOMContentLoaded', () => {
+                const isStandalone = window.matchMedia('(display-mode: standalone)').matches ||
+                                    window.navigator.standalone ||
+                                    document.referrer.includes('android-app://');
+
+                if (isStandalone) {
+                    console.log('🚀 Application installée en mode PWA');
+                    document.body.classList.add('pwa-mode');
+                }
+            });
+
+            // Handle install prompt
+            window.deferredPrompt = null;
+            window.addEventListener('beforeinstallprompt', (e) => {
+                // Prevent the mini-infobar from appearing on mobile
+                e.preventDefault();
+                // Stash the event so it can be triggered later
+                window.deferredPrompt = e;
+                console.log('💡 L\'application peut être installée');
+
+                // Dispatch a custom event for React components
+                window.dispatchEvent(new CustomEvent('app-install-available'));
+            });
+
+            // Handle successful installation
+            window.addEventListener('appinstalled', () => {
+                console.log('✅ Application installée avec succès');
+                window.deferredPrompt = null;
+            });
+        </script>
+
+        {# Dev auto-reload - Only in dev environment #}
+        {% if app.environment == 'dev' %}
+        <script>
+            window.DEV_AUTO_RELOAD = true;
+        </script>
+        <script src="/dev-reload.js"></script>
+        {% endif %}
     </body>
 </html>

@@ -1,0 +1,100 @@
+{
+  "name": "CheckHagnere - Gestion LMNP & SCI",
+  "short_name": "CheckHagnere",
+  "description": "Application de gestion pour LMNP.AI et SCI.AI",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#000000",
+  "orientation": "portrait-primary",
+  "scope": "/",
+  "icons": [
+    {
+      "src": "/medias/icons/icon-72x72.png",
+      "sizes": "72x72",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/medias/icons/icon-96x96.png",
+      "sizes": "96x96",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/medias/icons/icon-128x128.png",
+      "sizes": "128x128",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/medias/icons/icon-144x144.png",
+      "sizes": "144x144",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/medias/icons/icon-152x152.png",
+      "sizes": "152x152",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/medias/icons/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/medias/icons/icon-384x384.png",
+      "sizes": "384x384",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/medias/icons/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["business", "finance", "productivity"],
+  "shortcuts": [
+    {
+      "name": "LMNP.AI",
+      "short_name": "LMNP",
+      "description": "Accéder à LMNP.AI",
+      "url": "/suivi/lmnp_ai",
+      "icons": [
+        {
+          "src": "/medias/images/logo_lmnp.png",
+          "sizes": "96x96"
+        }
+      ]
+    },
+    {
+      "name": "SCI.AI",
+      "short_name": "SCI",
+      "description": "Accéder à SCI.AI",
+      "url": "/suivi/sci_ai",
+      "icons": [
+        {
+          "src": "/medias/images/logo_sci.png",
+          "sizes": "96x96"
+        }
+      ]
+    },
+    {
+      "name": "Administration",
+      "short_name": "Admin",
+      "description": "Accéder à l'administration",
+      "url": "/admin/lmnp_ai",
+      "icons": [
+        {
+          "src": "/medias/icons/icon-192x192.png",
+          "sizes": "192x192"
+        }
+      ]
+    }
+  ]
+}
