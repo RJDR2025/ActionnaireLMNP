@@ -43,62 +43,38 @@ class ImportDevMazzitelliTimeEntriesCommand extends Command
 
         // Data for November 2025 - Total: 158h
         $timeEntries = [
-            // Semaine 1: Refonte design dashboard admin
+            // Semaine 1: Conversion dashboard admin en flux avec design Shadcn
             [
                 'date' => '2025-11-03',
-                'hours' => 8,
+                'hours' => 7,
                 'tasks' => [
-                    'Refonte design dashboard admin - Analyse de l\'existant et maquettage',
+                    'Dashboard admin - Conversion en flux avec design Shadcn - Analyse et mise en place',
                     'Gestion des tickets support client',
                 ],
             ],
             [
                 'date' => '2025-11-04',
-                'hours' => 8,
+                'hours' => 7,
                 'tasks' => [
-                    'Refonte design dashboard admin - Mise en place des nouveaux composants UI',
+                    'Dashboard admin - Conversion en flux avec design Shadcn - Intégration composants UI',
                     'Gestion des tickets support client',
                 ],
             ],
             [
                 'date' => '2025-11-05',
-                'hours' => 8,
-                'tasks' => [
-                    'Refonte design dashboard admin - Intégration des pages principales',
-                    'Gestion des tickets support client',
-                ],
-            ],
-            [
-                'date' => '2025-11-06',
-                'hours' => 8,
-                'tasks' => [
-                    'Refonte design dashboard admin - Pages de gestion utilisateurs',
-                    'Gestion des tickets support client',
-                ],
-            ],
-            [
-                'date' => '2025-11-07',
-                'hours' => 8,
-                'tasks' => [
-                    'Refonte design dashboard admin - Finalisation et corrections responsive',
-                    'Gestion des tickets support client',
-                ],
-            ],
-            // Week-end 1 (samedi)
-            [
-                'date' => '2025-11-08',
                 'hours' => 7,
                 'tasks' => [
-                    'Refonte design dashboard admin - Corrections bugs et ajustements',
-                    'Gestion des tickets support urgents',
+                    'Dashboard admin - Conversion en flux avec design Shadcn - Pages principales et finalisation',
+                    'Gestion des tickets support client',
                 ],
             ],
-            // Semaine 2: Refonte design site vitrine
+            // Semaine 2: Site vitrine - Pages front
             [
                 'date' => '2025-11-10',
                 'hours' => 8,
                 'tasks' => [
-                    'Refonte design site vitrine - Analyse et maquettage nouvelle charte graphique',
+                    'Site vitrine - Pages Accueil et Blogs',
+                    'Site vitrine - Header et Footer communs',
                     'Gestion des tickets support client',
                 ],
             ],
@@ -106,7 +82,8 @@ class ImportDevMazzitelliTimeEntriesCommand extends Command
                 'date' => '2025-11-11',
                 'hours' => 8,
                 'tasks' => [
-                    'Refonte design site vitrine - Page d\'accueil et navigation',
+                    'Site vitrine - Page Articles blogs',
+                    'Site vitrine - Page Contact',
                     'Gestion des tickets support client',
                 ],
             ],
@@ -114,7 +91,7 @@ class ImportDevMazzitelliTimeEntriesCommand extends Command
                 'date' => '2025-11-12',
                 'hours' => 8,
                 'tasks' => [
-                    'Refonte design site vitrine - Pages de présentation des offres',
+                    'Site vitrine - Pages Connexion et Inscription',
                     'Gestion des tickets support client',
                 ],
             ],
@@ -122,7 +99,8 @@ class ImportDevMazzitelliTimeEntriesCommand extends Command
                 'date' => '2025-11-13',
                 'hours' => 8,
                 'tasks' => [
-                    'Refonte design site vitrine - Pages FAQ et contact',
+                    'Site vitrine - Page Simulateur',
+                    'Site vitrine - Page Notre-plateforme',
                     'Gestion des tickets support client',
                 ],
             ],
@@ -130,16 +108,17 @@ class ImportDevMazzitelliTimeEntriesCommand extends Command
                 'date' => '2025-11-14',
                 'hours' => 8,
                 'tasks' => [
-                    'Refonte design site vitrine - Responsive et optimisations',
+                    'Site vitrine - Page Services expert-comptable',
+                    'Référencement naturel (SEO)',
                     'Gestion des tickets support client',
                 ],
             ],
-            // Semaine 3: Vérifications par IA
+            // Semaine 3: Suite site vitrine et optimisations
             [
                 'date' => '2025-11-17',
                 'hours' => 8,
                 'tasks' => [
-                    'Vérifications par IA - Analyse des problèmes avec les justificatifs volumineux',
+                    'Site vitrine - Optimisations et corrections responsive',
                     'Gestion des tickets support client',
                 ],
             ],
@@ -147,7 +126,7 @@ class ImportDevMazzitelliTimeEntriesCommand extends Command
                 'date' => '2025-11-18',
                 'hours' => 8,
                 'tasks' => [
-                    'Vérifications par IA - Refonte de la logique de traitement pour recettes/charges',
+                    'Site vitrine - Intégration finale des pages',
                     'Gestion des tickets support client',
                 ],
             ],
@@ -155,7 +134,7 @@ class ImportDevMazzitelliTimeEntriesCommand extends Command
                 'date' => '2025-11-19',
                 'hours' => 8,
                 'tasks' => [
-                    'Vérifications par IA - Adaptation du code pour gérer les cas avec trop de justificatifs',
+                    'Dashboard admin - Corrections et améliorations Shadcn',
                     'Gestion des tickets support client',
                 ],
             ],
@@ -163,7 +142,7 @@ class ImportDevMazzitelliTimeEntriesCommand extends Command
                 'date' => '2025-11-20',
                 'hours' => 8,
                 'tasks' => [
-                    'Vérifications par IA - Tests et corrections des edge cases',
+                    'Dashboard admin - Tests et optimisations flux',
                     'Gestion des tickets support client',
                 ],
             ],
@@ -171,7 +150,7 @@ class ImportDevMazzitelliTimeEntriesCommand extends Command
                 'date' => '2025-11-21',
                 'hours' => 8,
                 'tasks' => [
-                    'Vérifications par IA - Finalisation et déploiement des corrections',
+                    'Site vitrine - Finalisation référencement naturel (SEO)',
                     'Gestion des tickets support client',
                 ],
             ],
@@ -180,7 +159,7 @@ class ImportDevMazzitelliTimeEntriesCommand extends Command
                 'date' => '2025-11-22',
                 'hours' => 7,
                 'tasks' => [
-                    'Vérifications par IA - Monitoring et corrections post-déploiement',
+                    'Site vitrine et Dashboard - Corrections bugs et ajustements',
                     'Gestion des tickets support urgents',
                 ],
             ],
@@ -209,6 +188,28 @@ class ImportDevMazzitelliTimeEntriesCommand extends Command
                 'tasks' => [
                     'Application actionnaires.lmnp.ai - Tests, corrections et déploiement',
                     'Gestion des tickets support client',
+                ],
+            ],
+            // Fin novembre: Vérification IA
+            [
+                'date' => '2025-11-28',
+                'hours' => 10,
+                'tasks' => [
+                    'Vérification IA - Tests et validation',
+                ],
+            ],
+            [
+                'date' => '2025-11-29',
+                'hours' => 10,
+                'tasks' => [
+                    'Vérification IA - Tests et validation',
+                ],
+            ],
+            [
+                'date' => '2025-11-30',
+                'hours' => 6,
+                'tasks' => [
+                    'Vérification IA - Tests et validation',
                 ],
             ],
         ];
