@@ -13,7 +13,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 
 #[AsCommand(
     name: 'app:import-fred-time-entries',
-    description: 'Import time entries for frederic.curinckx@gmail.com for 2025 (Sept-Nov)',
+    description: 'Import time entries for margraveDEV@gmail.com for 2025 (Sept-Nov)',
 )]
 class ImportFredTimeEntriesCommand extends Command
 {
@@ -32,7 +32,7 @@ class ImportFredTimeEntriesCommand extends Command
         $io = new SymfonyStyle($input, $output);
 
         // Find user
-        $user = $this->userRepository->findOneBy(['email' => 'frederic.curinckx@gmail.com']);
+        $user = $this->userRepository->findOneBy(['email' => 'margraveDEV@gmail.com']);
 
         if (!$user) {
             $io->error('User frederic.curinckx@gmail.com not found!');
