@@ -8,6 +8,7 @@ use App\Repository\UserRepository;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Mailer\MailerInterface;
@@ -16,7 +17,7 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 #[AsCommand(
     name: 'app:monthly-recap',
-    description: 'Génère une synthèse mensuelle des développements avec ChatGPT',
+    description: 'Génère une synthèse mensuelle des développements avec Claude',
 )]
 class MonthlyRecapCommand extends Command
 {
@@ -26,9 +27,16 @@ class MonthlyRecapCommand extends Command
         private ActionnaireRepository $actionnaireRepository,
         private HttpClientInterface $httpClient,
         private MailerInterface $mailer,
-        private string $openAiApiKey
+        private string $anthropicApiKey
     ) {
         parent::__construct();
+    }
+
+    protected function configure(): void
+    {
+        $this
+            ->addOption('email', null, InputOption::VALUE_OPTIONAL, 'Envoyer uniquement à cet email')
+            ->addOption('dry-run', null, InputOption::VALUE_NONE, 'Simuler l\'envoi sans envoyer réellement');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
@@ -90,7 +98,7 @@ class MonthlyRecapCommand extends Command
         // Préparer le prompt pour ChatGPT
         $prompt = $this->buildPrompt($tasksByApp, $hoursByApp, $lastMonth);
 
-        $io->section('Génération de la synthèse avec ChatGPT...');
+        $io->section('Génération de la synthèse avec Claude...');
 
         try {
             $synthesis = $this->generateSynthesis($prompt);
@@ -100,8 +108,16 @@ class MonthlyRecapCommand extends Command
             $io->text($synthesis);
 
             // Envoyer l'email
-            $this->sendRecapEmail($synthesis, $lastMonth);
-            $io->success('Email envoyé avec succès !');
+            $targetEmail = $input->getOption('email');
+            $dryRun = $input->getOption('dry-run');
+
+            $this->sendRecapEmail($synthesis, $lastMonth, $io, $targetEmail, $dryRun);
+
+            if ($dryRun) {
+                $io->success('Simulation terminée (aucun email envoyé)');
+            } else {
+                $io->success('Email envoyé avec succès !');
+            }
 
         } catch (\Exception $e) {
             $io->error('Erreur lors de la génération de la synthèse : ' . $e->getMessage());
@@ -149,55 +165,54 @@ class MonthlyRecapCommand extends Command
             $prompt .= "\n";
         }
 
-        $prompt .= "\nGénère un rapport professionnel et structuré en HTML avec des tableaux pour présenter TOUTES les données ci-dessus.\n";
-        $prompt .= "Le rapport doit contenir :\n";
-        $prompt .= "1. Pour chaque projet, un tableau listant TOUTES les tâches ci-dessus avec 1 seule colonne : Réalisation\n";
-        $prompt .= "   IMPORTANT : Ne pas inclure les dates ni les noms des développeurs dans le tableau\n";
-        $prompt .= "   Chaque tâche doit être une ligne du tableau (juste la description de la tâche)\n";
-        $prompt .= "   Sépare chaque tâche d'une même journée sur une ligne différente du tableau\n";
-        $prompt .= "2. Un paragraphe de bilan global du mois\n\n";
-        $prompt .= "IMPORTANT : \n";
-        $prompt .= "- Ne mets AUCUN commentaire HTML (<!-- -->)\n";
-        $prompt .= "- Ne mets PAS de balises markdown (```html ou ```)\n";
-        $prompt .= "- Retourne UNIQUEMENT le HTML pur sans aucune autre balise\n";
-        $prompt .= "- Remplis tous les tableaux avec les vraies données\n";
-        $prompt .= "- Format attendu : HTML pur avec <table>, <thead>, <tbody>, <tr>, <th>, <td>\n";
-        $prompt .= "Le rapport doit être clair, concis et adapté pour des actionnaires/clients.";
+        $prompt .= "\nGénère un rapport professionnel et structuré en HTML. Le rapport doit avoir EXACTEMENT cette structure :\n\n";
+        $prompt .= "1. UN TITRE H2 : 'Rapport de développement - [Mois] [Année]'\n\n";
+        $prompt .= "2. UNE SECTION H3 : 'Détails des tâches par projet'\n";
+        $prompt .= "   Pour CHAQUE projet, créer :\n";
+        $prompt .= "   - Un sous-titre H4 avec le nom du projet (ex: 'Projet LMNP')\n";
+        $prompt .= "   - Un tableau avec 1 colonne 'RÉALISATION' listant TOUTES les tâches\n";
+        $prompt .= "   - IMPORTANT : Ne pas inclure les dates ni les noms des développeurs\n";
+        $prompt .= "   - Chaque tâche = une ligne du tableau\n\n";
+        $prompt .= "3. UNE SECTION H3 : 'Bilan global du mois' avec un paragraphe de synthèse\n\n";
+        $prompt .= "RÈGLES STRICTES :\n";
+        $prompt .= "- Ne mets AUCUN commentaire HTML\n";
+        $prompt .= "- Ne mets PAS de balises markdown\n";
+        $prompt .= "- Retourne UNIQUEMENT le HTML pur\n";
+        $prompt .= "- Utilise des couleurs pour les en-têtes de tableau (background violet/bleu comme #667eea)\n";
+        $prompt .= "- Format : <table>, <thead>, <tbody>, <tr>, <th>, <td>\n";
+        $prompt .= "Le rapport doit être clair, professionnel et adapté pour des actionnaires.";
 
         return $prompt;
     }
 
     private function generateSynthesis(string $prompt): string
     {
-        $response = $this->httpClient->request('POST', 'https://api.openai.com/v1/chat/completions', [
+        $response = $this->httpClient->request('POST', 'https://api.anthropic.com/v1/messages', [
             'headers' => [
-                'Authorization' => 'Bearer ' . $this->openAiApiKey,
+                'x-api-key' => $this->anthropicApiKey,
+                'anthropic-version' => '2023-06-01',
                 'Content-Type' => 'application/json',
             ],
             'json' => [
-                'model' => 'gpt-4',
+                'model' => 'claude-sonnet-4-20250514',
+                'max_tokens' => 4000,
+                'system' => 'Tu es un assistant spécialisé dans la rédaction de rapports de développement professionnels. Tu retournes uniquement du HTML pur sans balises markdown.',
                 'messages' => [
-                    [
-                        'role' => 'system',
-                        'content' => 'Tu es un assistant spécialisé dans la rédaction de rapports de développement professionnels. Tu retournes uniquement du HTML pur sans balises markdown.'
-                    ],
                     [
                         'role' => 'user',
                         'content' => $prompt
                     ]
                 ],
-                'temperature' => 0.7,
-                'max_tokens' => 2000,
             ],
         ]);
 
         $data = $response->toArray();
 
-        if (!isset($data['choices'][0]['message']['content'])) {
-            throw new \Exception('Réponse invalide de l\'API OpenAI');
+        if (!isset($data['content'][0]['text'])) {
+            throw new \Exception('Réponse invalide de l\'API Anthropic');
         }
 
-        $html = $data['choices'][0]['message']['content'];
+        $html = $data['content'][0]['text'];
 
         // Nettoyer les balises markdown si présentes
         $html = preg_replace('/^```html\s*/i', '', $html);
@@ -207,13 +222,27 @@ class MonthlyRecapCommand extends Command
         return $html;
     }
 
-    private function sendRecapEmail(string $synthesis, \DateTime $month): void
+    private function sendRecapEmail(string $synthesis, \DateTime $month, SymfonyStyle $io, ?string $targetEmail = null, bool $dryRun = false): void
     {
-        // Récupérer tous les actionnaires de la table actionnaire
-        $actionnaires = $this->actionnaireRepository->findAll();
+        // Déterminer les destinataires
+        $recipients = [];
 
-        if (empty($actionnaires)) {
-            throw new \Exception('Aucun actionnaire trouvé pour l\'envoi de l\'email');
+        if ($targetEmail) {
+            // Envoyer uniquement à l'email spécifié
+            $recipients[] = $targetEmail;
+            $io->info(sprintf('Destinataire ciblé : %s', $targetEmail));
+        } else {
+            // Récupérer tous les actionnaires de la table actionnaire
+            $actionnaires = $this->actionnaireRepository->findAll();
+
+            if (empty($actionnaires)) {
+                throw new \Exception('Aucun actionnaire trouvé pour l\'envoi de l\'email');
+            }
+
+            foreach ($actionnaires as $actionnaire) {
+                $recipients[] = $actionnaire->getEmail();
+            }
+            $io->info(sprintf('%d destinataires trouvés', count($recipients)));
         }
 
         $monthName = ucfirst($this->getMonthInFrench($month));
@@ -341,15 +370,23 @@ class MonthlyRecapCommand extends Command
         );
 
         $email = (new Email())
-            ->from('noreply@checkhagnere.fr')
+            ->from(new \Symfony\Component\Mime\Address('noreply@noreply.lmnp.ai', 'LMNP.AI'))
             ->subject(sprintf('📊 Récapitulatif mensuel - %s %s', $monthName, $month->format('Y')))
             ->html($htmlContent);
 
-        // Ajouter tous les actionnaires en destinataires
-        foreach ($actionnaires as $actionnaire) {
-            $email->addTo($actionnaire->getEmail());
+        // Ajouter les destinataires
+        foreach ($recipients as $recipient) {
+            $email->addTo($recipient);
         }
 
-        $this->mailer->send($email);
+        if ($dryRun) {
+            $io->section('Mode simulation - Aperçu de l\'email');
+            $io->listing($recipients);
+            $io->text('Sujet : ' . $email->getSubject());
+            $io->section('Contenu HTML généré');
+            $io->text($synthesis);
+        } else {
+            $this->mailer->send($email);
+        }
     }
 }
