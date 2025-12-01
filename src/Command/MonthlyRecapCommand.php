@@ -165,22 +165,29 @@ class MonthlyRecapCommand extends Command
             $prompt .= "\n";
         }
 
-        $prompt .= "\nGénère un rapport professionnel et structuré en HTML. Le rapport doit avoir EXACTEMENT cette structure :\n\n";
+        $prompt .= "\nGénère un rapport professionnel et SYNTHÉTIQUE en HTML. IMPORTANT : REGROUPE les tâches similaires ensemble !\n\n";
+        $prompt .= "Le rapport doit avoir cette structure :\n\n";
         $prompt .= "1. UN TITRE H2 : 'Rapport de développement - [Mois] [Année]'\n\n";
-        $prompt .= "2. UNE SECTION H3 : 'Détails des tâches par projet'\n";
+        $prompt .= "2. UNE SECTION H3 : 'Réalisations du mois'\n";
         $prompt .= "   Pour CHAQUE projet, créer :\n";
-        $prompt .= "   - Un sous-titre H4 avec le nom du projet (ex: 'Projet LMNP')\n";
-        $prompt .= "   - Un tableau avec 1 colonne 'RÉALISATION' listant TOUTES les tâches\n";
-        $prompt .= "   - IMPORTANT : Ne pas inclure les dates ni les noms des développeurs\n";
-        $prompt .= "   - Chaque tâche = une ligne du tableau\n\n";
-        $prompt .= "3. UNE SECTION H3 : 'Bilan global du mois' avec un paragraphe de synthèse\n\n";
+        $prompt .= "   - Un sous-titre H4 avec le nom du projet\n";
+        $prompt .= "   - Un tableau avec 1 colonne 'RÉALISATION' contenant des lignes REGROUPÉES par thème\n";
+        $prompt .= "   - REGROUPE les tâches similaires en une seule ligne synthétique\n";
+        $prompt .= "   - Exemple : au lieu de 10 lignes 'Gestion tickets support', fais UNE ligne 'Support client continu'\n";
+        $prompt .= "   - Exemple : regroupe 'Page Accueil', 'Page Contact', 'Page Blog' en 'Développement des pages principales du site vitrine'\n";
+        $prompt .= "   - Maximum 8-10 lignes par projet, pas plus !\n";
+        $prompt .= "   - Ne pas inclure les dates ni les noms des développeurs\n\n";
+        $prompt .= "3. UNE SECTION H3 : 'Conclusion' avec un paragraphe de synthèse globale du mois\n";
+        $prompt .= "   - Résume les avancées majeures\n";
+        $prompt .= "   - Mentionne les points clés accomplis\n";
+        $prompt .= "   - Donne une vision d'ensemble professionnelle\n\n";
         $prompt .= "RÈGLES STRICTES :\n";
+        $prompt .= "- SYNTHÉTISE et REGROUPE, ne liste pas chaque tâche individuellement\n";
         $prompt .= "- Ne mets AUCUN commentaire HTML\n";
         $prompt .= "- Ne mets PAS de balises markdown\n";
         $prompt .= "- Retourne UNIQUEMENT le HTML pur\n";
         $prompt .= "- Utilise des couleurs pour les en-têtes de tableau (background violet/bleu comme #667eea)\n";
-        $prompt .= "- Format : <table>, <thead>, <tbody>, <tr>, <th>, <td>\n";
-        $prompt .= "Le rapport doit être clair, professionnel et adapté pour des actionnaires.";
+        $prompt .= "Le rapport doit être clair, concis et adapté pour des actionnaires.";
 
         return $prompt;
     }
