@@ -156,8 +156,7 @@ class MonthlyRecapCommand extends Command
         );
 
         foreach ($tasksByApp as $app => $tasks) {
-            $hours = $hoursByApp[$app];
-            $prompt .= sprintf("## Projet %s (%s heures)\n\n", $app, number_format($hours, 2));
+            $prompt .= sprintf("## Projet %s\n\n", $app);
             $prompt .= "Tâches réalisées :\n";
             foreach ($tasks as $task) {
                 $prompt .= "- " . $task . "\n";
@@ -176,13 +175,14 @@ class MonthlyRecapCommand extends Command
         $prompt .= "   - Exemple : au lieu de 10 lignes 'Gestion tickets support', fais UNE ligne 'Support client continu'\n";
         $prompt .= "   - Exemple : regroupe 'Page Accueil', 'Page Contact', 'Page Blog' en 'Développement des pages principales du site vitrine'\n";
         $prompt .= "   - Maximum 8-10 lignes par projet, pas plus !\n";
-        $prompt .= "   - Ne pas inclure les dates ni les noms des développeurs\n\n";
+        $prompt .= "   - Ne pas inclure les dates, les noms des développeurs, ni les heures\n\n";
         $prompt .= "3. UNE SECTION H3 : 'Conclusion' avec un paragraphe de synthèse globale du mois\n";
         $prompt .= "   - Résume les avancées majeures\n";
         $prompt .= "   - Mentionne les points clés accomplis\n";
         $prompt .= "   - Donne une vision d'ensemble professionnelle\n\n";
         $prompt .= "RÈGLES STRICTES :\n";
         $prompt .= "- SYNTHÉTISE et REGROUPE, ne liste pas chaque tâche individuellement\n";
+        $prompt .= "- NE MENTIONNE JAMAIS les heures ou le temps passé (ni dans les titres, ni dans la conclusion)\n";
         $prompt .= "- Ne mets AUCUN commentaire HTML\n";
         $prompt .= "- Ne mets PAS de balises markdown\n";
         $prompt .= "- Retourne UNIQUEMENT le HTML pur\n";
