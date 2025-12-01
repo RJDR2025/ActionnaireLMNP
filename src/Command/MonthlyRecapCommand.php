@@ -376,24 +376,24 @@ class MonthlyRecapCommand extends Command
             (new \DateTime())->format('Y')
         );
 
-        $email = (new Email())
-            ->from(new \Symfony\Component\Mime\Address('noreply@noreply.lmnp.ai', 'LMNP.AI'))
-            ->subject(sprintf('📊 Récapitulatif mensuel - %s %s', $monthName, $month->format('Y')))
-            ->html($htmlContent);
-
-        // Ajouter les destinataires
-        foreach ($recipients as $recipient) {
-            $email->addTo($recipient);
-        }
-
         if ($dryRun) {
             $io->section('Mode simulation - Aperçu de l\'email');
             $io->listing($recipients);
-            $io->text('Sujet : ' . $email->getSubject());
+            $io->text('Sujet : ' . sprintf('📊 Récapitulatif mensuel - %s %s', $monthName, $month->format('Y')));
             $io->section('Contenu HTML généré');
             $io->text($synthesis);
         } else {
-            $this->mailer->send($email);
+            // Envoyer un email individuel à chaque destinataire
+            foreach ($recipients as $recipient) {
+                $email = (new Email())
+                    ->from(new \Symfony\Component\Mime\Address('noreply@noreply.lmnp.ai', 'LMNP.AI'))
+                    ->to($recipient)
+                    ->subject(sprintf('📊 Récapitulatif mensuel - %s %s', $monthName, $month->format('Y')))
+                    ->html($htmlContent);
+
+                $this->mailer->send($email);
+                $io->writeln(sprintf('  ✓ Email envoyé à %s', $recipient));
+            }
         }
     }
 }
